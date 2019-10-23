@@ -3,6 +3,7 @@ import React from 'react';
 import LoadingIndicator from './components/LoadingIndicator';
 import CharacterCard from './components/CharacterCard';
 import Arrow from './components/Arrow';
+import PickRandomCharacter from './components/PickRandomCharacter';
 import createResource from './createResource';
 import { callApi, useCharacterId, character } from './utils';
 import Img from './Img';
@@ -28,7 +29,7 @@ const CharacterContainer = () => {
   const characterId = useCharacterId();
 
   if (!characterId) {
-    return null;
+    return <PickRandomCharacter />;
   }
 
   return (
@@ -36,7 +37,7 @@ const CharacterContainer = () => {
       <Arrow direction="left" />
       <div className="character-content">
         <React.Suspense fallback={<LoadingIndicator />}>
-          <Character id={characterId} />
+          <Character id={characterId} imgComponent={Img} />
         </React.Suspense>
       </div>
       <Arrow direction="right" />

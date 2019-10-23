@@ -38,3 +38,10 @@ export function character(id) {
     },
   };
 }
+
+export function getRandomCharacterId() {
+  const max = LAST_CHARACTER_ID;
+  const min = FIRST_CHARACTER_ID;
+
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
