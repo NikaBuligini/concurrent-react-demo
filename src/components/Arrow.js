@@ -33,6 +33,16 @@ function getSiblingCharacterId(id, direction) {
   return c.next();
 }
 
+const KeyboardBoundButton = ({ targetKey, onClick, children, ...rest }) => {
+  useKeyPress(targetKey, onClick, [onClick]);
+
+  return (
+    <button {...rest} type="button" onClick={onClick}>
+      {children}
+    </button>
+  );
+};
+
 const Arrow = ({ direction }) => {
   const characterId = useCharacterId();
 
@@ -43,17 +53,15 @@ const Arrow = ({ direction }) => {
     history.push(`/?id=${nextCharacterId}`);
   }, [characterId, direction, history]);
 
-  useKeyPress(KEYS[direction], handleClick, [handleClick]);
-
   if (!characterId) {
     return null;
   }
 
   return (
     <Wrapper>
-      <button type="button" onClick={handleClick}>
+      <KeyboardBoundButton targetKey={KEYS[direction]} onClick={handleClick}>
         <i className={classnames('fas', `fa-chevron-${direction}`)} />
-      </button>
+      </KeyboardBoundButton>
     </Wrapper>
   );
 };
