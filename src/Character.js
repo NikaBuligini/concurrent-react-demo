@@ -37,7 +37,7 @@ const CharacterContainer = () => {
       <Arrow direction="left" />
       <div className="character-content">
         <React.Suspense fallback={<LoadingIndicator />}>
-          <Character id={characterId} imgComponent={Img} />
+          <Character id={characterId} />
         </React.Suspense>
       </div>
       <Arrow direction="right" />

@@ -16,19 +16,15 @@ function access(resource, key, fetch) {
   if (entry === undefined) {
     const thenable = fetch(key);
     thenable.then(value => {
-      if (newResult.status === Pending) {
-        newResult.status = Resolved;
-        newResult.value = value;
-        cacheForResource.set(key, value);
-      }
+      cacheForResource.set(key, value);
     });
 
-    const newResult = {
+    const result = {
       status: Pending,
       value: thenable,
     };
 
-    return newResult;
+    return result;
   }
 
   return {
