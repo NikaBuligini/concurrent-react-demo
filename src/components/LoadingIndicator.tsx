@@ -1,4 +1,5 @@
-import React from 'react';
+import { VFC } from 'react';
+import { FC } from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -8,13 +9,24 @@ const Wrapper = styled.div`
   }
 `;
 
-const Rect = ({ x, y, children }) => (
+type RectProps = {
+  x: number;
+  y: number;
+}
+
+const Rect: FC<RectProps> = ({ x, y, children }) => (
   <rect x={x} y={y} width="4" height="10" fill="#333" opacity="0.2">
     {children}
   </rect>
 );
 
-const Animate = ({ attributeName, values, begin }) => (
+type AnimateProps = {
+  attributeName: string;
+  values: string;
+  begin: string;
+}
+
+const Animate: VFC<AnimateProps> = ({ attributeName, values, begin }) => (
   <animate
     attributeName={attributeName}
     attributeType="XML"
@@ -37,7 +49,7 @@ const animations = [
   { name: 'y', values: '10; 5; 10' },
 ];
 
-const LoadingIndicator = () => (
+export const LoadingIndicator: VFC = () => (
   <Wrapper>
     <svg
       version="1.1"
@@ -58,5 +70,3 @@ const LoadingIndicator = () => (
     </svg>
   </Wrapper>
 );
-
-export default LoadingIndicator;

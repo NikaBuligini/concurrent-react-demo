@@ -1,22 +1,24 @@
-import React from 'react';
+import { FC, useRef } from 'react';
 import { useSpring, animated } from 'react-spring';
 
 const config = { mass: 1, tension: 350, friction: 35 };
 
 const dampen = 10;
 
-function calc(x, y, container) {
+function calc(x: number, y: number, container: HTMLDivElement) {
   return [
     -(y - container.offsetTop - container.offsetHeight / 2) / dampen,
     (x - container.offsetLeft - container.offsetWidth / 2) / dampen,
   ];
 }
 
-const transform = (x, y, s) => `perspective(600px) rotateX(${x}deg) rotateY(${y}deg)`;
+type Props = {
+  className: string;
+}
 
-const Card = ({ className, children }) => {
-  const containerRef = React.useRef();
-  const cardRef = React.useRef();
+const Card: FC<Props> = ({ className, children }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef(null);
 
   const [animatedProps, set] = useSpring(() => ({
     xys: [0, 0],
@@ -34,13 +36,17 @@ const Card = ({ className, children }) => {
         className={className}
         onMouseEnter={resetAnimation}
         onMouseMove={({ clientX, clientY }) => {
-          set({
-            xys: calc(clientX, clientY, containerRef.current),
-          });
+          if (containerRef.current != null) {
+            set({
+              xys: calc(clientX, clientY, containerRef.current),
+            });
+          }
         }}
         onMouseLeave={resetAnimation}
         style={{
-          transform: animatedProps.xys.interpolate(transform),
+          transform: animatedProps.xys.to(
+            (x, y) => `perspective(600px) rotateX(${x}deg) rotateY(${y}deg)`
+          ),
         }}
       >
         {children}

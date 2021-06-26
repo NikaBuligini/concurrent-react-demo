@@ -1,12 +1,12 @@
-import React from 'react';
+import { FC } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
-import CharacterList from './components/CharacterList';
-import GlobalStyle from './GlobalStyle';
+import { CharacterList } from './components/CharacterList';
+import { GlobalStyle } from './GlobalStyle';
 import Character from './Character';
-import Footer from './components/Footer';
+import { Footer } from './components/Footer';
 
-const App = () => (
+export const App: FC = () => (
   <BrowserRouter>
     <GlobalStyle />
     <div className="App">
@@ -16,5 +16,3 @@ const App = () => (
     </div>
   </BrowserRouter>
 );
-
-export default App;

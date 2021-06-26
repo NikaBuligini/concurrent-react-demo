@@ -1,4 +1,4 @@
-import React from 'react';
+import { memo, VFC } from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
 import Card from './Card';
@@ -43,7 +43,7 @@ const Wrapper = styled(Card)`
       opacity: 0.7;
     }
   }
-`;
+` as any;
 
 const DetailsList = styled.div`
   padding: 6px 12px;
@@ -72,14 +72,39 @@ const DetailsList = styled.div`
   }
 `;
 
-const InfoItem = ({ label, value }) => (
+type InfoItemProps = {
+  label: string;
+  value: string;
+}
+
+const InfoItem: VFC<InfoItemProps> = ({ label, value }) => (
   <div className="details-list--item">
     <span className="item-label">{label}</span>
     <span className="item-value">{value}</span>
   </div>
 );
 
-const Character = ({ data, imgComponent: Img }) => {
+type CharacterDto = {
+  status: string;
+  species: string;
+  gender: string;
+  origin?: {
+    name: string;
+  };
+  location: {
+    name: string;
+  };
+  id: string;
+  image: string;
+  name: string;
+}
+
+type CharacterProps = {
+  data: CharacterDto;
+  imgComponent?: any;
+}
+
+const Character: VFC<CharacterProps> = ({ data, imgComponent: Img = "img" }) => {
   const details = [
     ['status', data.status],
     ['species', data.species],
@@ -105,8 +130,4 @@ const Character = ({ data, imgComponent: Img }) => {
   );
 };
 
-Character.defaultProps = {
-  imgComponent: 'img',
-};
-
-export default React.memo(Character);
+export default memo(Character);

@@ -1,23 +1,27 @@
-import React from 'react';
+import { Suspense, VFC, FC } from 'react';
 
-import LoadingIndicator from './components/LoadingIndicator';
+import { LoadingIndicator } from './components/LoadingIndicator';
 import CharacterCard from './components/CharacterCard';
-import Arrow from './components/Arrow';
-import PickRandomCharacter from './components/PickRandomCharacter';
+import { Arrow, Direction } from './components/Arrow';
+import { PickRandomCharacter } from './components/PickRandomCharacter';
 import createResource from './createResource';
 import { callApi, useCharacterId, character } from './utils';
-import Img from './Img';
+import { Img } from './Img';
 
-const characterCache = createResource(id => callApi(`character/${id}`));
+const characterCache = createResource((id) => callApi(`character/${id}`));
 
-function preload(id) {
+function preload(id: number) {
   const c = character(id);
 
   characterCache.preload(c.next());
   // characterCache.preload(c.prev());
 }
 
-const Character = ({ id }) => {
+type Props = {
+  id: number;
+}
+
+const Character: FC<Props> = ({ id }) => {
   preload(id);
 
   const character = characterCache.read(id);
@@ -25,7 +29,7 @@ const Character = ({ id }) => {
   return <CharacterCard data={character} imgComponent={Img} />;
 };
 
-const CharacterContainer = () => {
+const CharacterContainer: VFC = () => {
   const characterId = useCharacterId();
 
   if (!characterId) {
@@ -34,13 +38,13 @@ const CharacterContainer = () => {
 
   return (
     <div className="character-container">
-      <Arrow direction="left" />
+      <Arrow direction={Direction.Left} />
       <div className="character-content">
-        <React.Suspense fallback={<LoadingIndicator />}>
+        <Suspense fallback={<LoadingIndicator />}>
           <Character id={characterId} />
-        </React.Suspense>
+        </Suspense>
       </div>
-      <Arrow direction="right" />
+      <Arrow direction={Direction.Right} />
     </div>
   );
 };

@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import { useRef, VFC } from 'react';
+import styled, { CSSProperties } from 'styled-components';
 import { lighten, darken } from 'polished';
 import classnames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -63,27 +63,34 @@ const Wrapper = styled.div`
   }
 `;
 
-const CharacterItem = React.memo(({ id, name, style, isActive }) => (
-  <Link to={`/?id=${id}`} className={classnames('character', { active: isActive })} style={style}>
-    {name}
-  </Link>
-));
+type RowProps = {
+  index: number;
+  style: CSSProperties;
+}
 
-const Row = ({ index, style }) => {
+const Row: VFC<RowProps> = ({ index, style }) => {
   const selectedId = useCharacterId();
 
   const [id, name] = characters[index];
 
-  return <CharacterItem id={id} name={name} isActive={selectedId === id} style={style} />;
+  return (
+    <Link
+      to={`/?id=${id}`}
+      className={classnames('character', { active: selectedId === id })}
+      style={style}
+    >
+      {name}
+    </Link>
+  )
 };
 
-const CharacterList = () => {
-  const listRef = React.useRef();
+export const CharacterList: VFC = () => {
+  const listRef = useRef<List<any>>(null);
 
   const selectedId = useCharacterId();
 
   useDidUpdate(() => {
-    if (listRef.current) {
+    if (listRef.current && selectedId) {
       listRef.current.scrollToItem(selectedId, 'center');
     }
   }, [selectedId]);
@@ -94,9 +101,10 @@ const CharacterList = () => {
         {({ height, width }) => (
           <List
             ref={elem => {
-              if (elem && listRef.current === undefined) {
+              if (elem && listRef.current === undefined && selectedId) {
                 elem.scrollToItem(selectedId, 'center');
               }
+              // @ts-ignore
               listRef.current = elem;
             }}
             className="character-list"
@@ -112,5 +120,3 @@ const CharacterList = () => {
     </Wrapper>
   );
 };
-
-export default CharacterList;

@@ -1,7 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 import { darken } from 'polished';
 
-const GlobalStyle = createGlobalStyle`
+export const GlobalStyle = createGlobalStyle`
   :root {
     --primary-color: #09d3ac;
     --accent-color: #ff9800;
@@ -58,5 +58,3 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 `;
-
-export default GlobalStyle;

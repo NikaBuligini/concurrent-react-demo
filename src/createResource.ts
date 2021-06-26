@@ -3,7 +3,18 @@ const cache = new Map();
 const Pending = 0;
 const Resolved = 1;
 
-function access(resource, key, fetch) {
+type FetchFn<TKey, TReturn> = (key: TKey) => Promise<TReturn>;
+
+type Resource<TKey, TReturn> = {
+  read: (key: TKey) => TReturn;
+  preload: (key: TKey) => void;
+}
+
+function access<TKey, TReturn>(
+  resource: Resource<TKey, TReturn>,
+  key: TKey,
+  fetch: FetchFn<TKey, TReturn>
+) {
   let cacheForResource = cache.get(resource);
 
   if (cacheForResource === undefined) {
@@ -15,7 +26,7 @@ function access(resource, key, fetch) {
 
   if (entry === undefined) {
     const thenable = fetch(key);
-    thenable.then(value => {
+    thenable.then((value) => {
       cacheForResource.set(key, value);
     });
 
@@ -33,9 +44,9 @@ function access(resource, key, fetch) {
   };
 }
 
-function createResource(fetch) {
-  const resource = {
-    read: key => {
+function createResource<TKey, TReturn>(fetch: FetchFn<TKey, TReturn>) {
+  const resource: Resource<TKey, TReturn> = {
+    read: (key) => {
       const result = access(resource, key, fetch);
 
       switch (result.status) {
@@ -50,7 +61,7 @@ function createResource(fetch) {
       }
     },
 
-    preload: key => {
+    preload: (key) => {
       access(resource, key, fetch);
     },
   };

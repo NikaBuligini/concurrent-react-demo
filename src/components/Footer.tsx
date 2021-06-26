@@ -1,4 +1,4 @@
-import React from 'react';
+import { VFC } from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
@@ -21,11 +21,9 @@ const Wrapper = styled.div`
   }
 `;
 
-const Footer = () => (
+export const Footer: VFC = () => (
   <Wrapper>
     Use <i className="fas fa-chevron-left" /> or <i className="fas fa-chevron-right" /> key to
     navigate
   </Wrapper>
 );
-
-export default Footer;
