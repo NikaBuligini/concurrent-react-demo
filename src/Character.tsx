@@ -1,30 +1,28 @@
-import { Suspense, VFC, FC } from 'react';
+import { Suspense, VFC, FC } from "react";
 
-import { LoadingIndicator } from './components/LoadingIndicator';
-import CharacterCard from './components/CharacterCard';
-import { Arrow, Direction } from './components/Arrow';
-import { PickRandomCharacter } from './components/PickRandomCharacter';
-import createResource from './createResource';
-import { callApi, useCharacterId, character } from './utils';
-import { Img } from './Img';
+import { LoadingIndicator } from "./components/LoadingIndicator";
+import CharacterCard from "./components/CharacterCard";
+import { Arrow, Direction } from "./components/Arrow";
+import { PickRandomCharacter } from "./components/PickRandomCharacter";
+import { createAsset } from "./createAsset";
+import { callApi } from "./utils";
+import { Img } from "./Img";
+import { getNext, useCharacterId } from "./store";
+import { CharacterDto } from "./types";
 
-const characterCache = createResource((id) => callApi(`character/${id}`));
-
-function preload(id: number) {
-  const c = character(id);
-
-  characterCache.preload(c.next());
-  // characterCache.preload(c.prev());
-}
+const characterAsset = createAsset<CharacterDto, [number]>((id) =>
+  callApi(`character/${id}`)
+);
 
 type Props = {
   id: number;
-}
+};
 
 const Character: FC<Props> = ({ id }) => {
-  preload(id);
+  characterAsset.preload(getNext(id));
+  // characterAsset.preload(getPrev(id));
 
-  const character = characterCache.read(id);
+  const character = characterAsset.read(id);
 
   return <CharacterCard data={character} imgComponent={Img} />;
 };

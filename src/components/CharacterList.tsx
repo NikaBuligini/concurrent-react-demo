@@ -1,14 +1,13 @@
 import { useRef, VFC } from 'react';
-import styled, { CSSProperties } from 'styled-components';
+import styled from 'styled-components';
 import { lighten, darken } from 'polished';
 import classnames from 'classnames';
-import { Link } from 'react-router-dom';
 import { useDidUpdate } from 'react-nb-hooks';
-import { FixedSizeList as List } from 'react-window';
+import { FixedSizeList as List, ListChildComponentProps } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
 import characters from '../characters.json';
-import { useCharacterId } from '../utils.js';
+import { useCharacterId, useStore } from '../store';
 
 const Wrapper = styled.div`
   grid-area: characters;
@@ -34,6 +33,8 @@ const Wrapper = styled.div`
 
   .character {
     text-align: center;
+    color: var(--primary-color);
+    outline: 0;
 
     &.active {
       color: var(--accent-color);
@@ -63,29 +64,27 @@ const Wrapper = styled.div`
   }
 `;
 
-type RowProps = {
-  index: number;
-  style: CSSProperties;
-}
+const Row: VFC<ListChildComponentProps<typeof characters>> = ({ index, style, data }) => {
+  const { id: selectedId, goTo } = useStore();
 
-const Row: VFC<RowProps> = ({ index, style }) => {
-  const selectedId = useCharacterId();
-
-  const [id, name] = characters[index];
+  const [id, name] = data[index] as [number, string];
 
   return (
-    <Link
-      to={`/?id=${id}`}
+    <button
       className={classnames('character', { active: selectedId === id })}
+      onClick={(event) => {
+        event.preventDefault();
+        goTo(id)
+      }}
       style={style}
     >
       {name}
-    </Link>
+    </button>
   )
 };
 
 export const CharacterList: VFC = () => {
-  const listRef = useRef<List<any>>(null);
+  const listRef = useRef<List<typeof characters>>(null);
 
   const selectedId = useCharacterId();
 
@@ -112,6 +111,7 @@ export const CharacterList: VFC = () => {
             width={width}
             itemCount={characters.length}
             itemSize={24}
+            itemData={characters}
           >
             {Row}
           </List>

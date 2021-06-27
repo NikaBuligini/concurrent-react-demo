@@ -1,10 +1,13 @@
-import { FC, useCallback, VFC } from 'react';
-import styled from 'styled-components';
-import classnames from 'classnames';
-import { useHistory } from 'react-router-dom';
-import { useKeyPress } from 'react-nb-hooks';
+import { FC, VFC } from "react";
+import styled from "styled-components";
+import { useKeyPress } from "react-nb-hooks";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
 
-import { useCharacterId, character } from '../utils';
+import { useStore } from "../store";
 
 const Wrapper = styled.div`
   display: flex;
@@ -24,26 +27,25 @@ export enum Direction {
 }
 
 const KEYS = {
-  [Direction.Left]: '37',
-  [Direction.Right]: '39',
+  [Direction.Left]: "37",
+  [Direction.Right]: "39",
 };
 
-function getSiblingCharacterId(id: number, direction: Direction) {
-  const c = character(id);
-
-  if (direction === 'left') {
-    return c.prev();
-  }
-
-  return c.next();
-}
+const ICONS = {
+  [Direction.Left]: <FontAwesomeIcon icon={faChevronLeft} />,
+  [Direction.Right]: <FontAwesomeIcon icon={faChevronRight} />,
+};
 
 type KeyboardBoundButtonProps = {
   targetKey: string;
   onClick: () => void;
-}
+};
 
-const KeyboardBoundButton: FC<KeyboardBoundButtonProps> = ({ targetKey, onClick, children }) => {
+const KeyboardBoundButton: FC<KeyboardBoundButtonProps> = ({
+  targetKey,
+  onClick,
+  children,
+}) => {
   useKeyPress(targetKey, onClick);
 
   return (
@@ -55,30 +57,32 @@ const KeyboardBoundButton: FC<KeyboardBoundButtonProps> = ({ targetKey, onClick,
 
 type Props = {
   direction: Direction;
-}
+};
 
 export const Arrow: VFC<Props> = ({ direction }) => {
-  const characterId = useCharacterId();
+  const { id, next, prev } = useStore();
 
-  const history = useHistory();
-
-  const handleClick = useCallback(() => {
-    if (characterId == null) {
-      return;
+  const handleClick = () => {
+    switch (direction) {
+      case Direction.Left: {
+        prev();
+        break;
+      }
+      case Direction.Right: {
+        next();
+        break;
+      }
     }
-    
-    const nextCharacterId = getSiblingCharacterId(characterId, direction);
-    history.push(`/?id=${nextCharacterId}`);
-  }, [characterId, direction, history]);
+  };
 
-  if (!characterId) {
+  if (id == null) {
     return null;
   }
 
   return (
     <Wrapper>
       <KeyboardBoundButton targetKey={KEYS[direction]} onClick={handleClick}>
-        <i className={classnames('fas', `fa-chevron-${direction}`)} />
+        {ICONS[direction]}
       </KeyboardBoundButton>
     </Wrapper>
   );

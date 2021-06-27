@@ -2,6 +2,7 @@ import { memo, VFC } from 'react';
 import styled from 'styled-components';
 import { darken } from 'polished';
 import Card from './Card';
+import { CharacterDto } from '../types';
 
 const Wrapper = styled(Card)`
   position: relative;
@@ -83,21 +84,6 @@ const InfoItem: VFC<InfoItemProps> = ({ label, value }) => (
     <span className="item-value">{value}</span>
   </div>
 );
-
-type CharacterDto = {
-  status: string;
-  species: string;
-  gender: string;
-  origin?: {
-    name: string;
-  };
-  location: {
-    name: string;
-  };
-  id: string;
-  image: string;
-  name: string;
-}
 
 type CharacterProps = {
   data: CharacterDto;

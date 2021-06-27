@@ -1,8 +1,9 @@
 import { VFC } from 'react';
 import styled from 'styled-components';
-import { useHistory } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRandom } from '@fortawesome/free-solid-svg-icons'
 
-import { getRandomCharacterId } from '../utils';
+import { useStore } from '../store';
 
 const Wrapper = styled.div`
   display: flex;
@@ -13,23 +14,23 @@ const Wrapper = styled.div`
     padding: 6px;
   }
 
-  .fas {
+  .icon {
     margin-right: 6px;
   }
 `;
 
 export const PickRandomCharacter: VFC = () => {
-  const history = useHistory();
+  const { pickRandom } = useStore();
 
   return (
     <Wrapper>
       <button
         type="button"
-        onClick={() => {
-          history.push(`/?id=${getRandomCharacterId()}`);
-        }
-      }>
-        <i className="fas fa-random"></i>
+        onClick={() => void pickRandom()}
+      >
+        <span className="icon">
+          <FontAwesomeIcon icon={faRandom} />
+        </span>
         Pick random
       </button>
     </Wrapper>
