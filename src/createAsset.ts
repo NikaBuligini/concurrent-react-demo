@@ -41,9 +41,10 @@ function handleAsset<Response, Args extends any[]>(
       fn(...args)
         .then((response) => {
           entry.response = (response ?? true) as Response;
-          return entry.response;
         })
-        .catch((e) => (entry.error = e ?? "unknown error")),
+        .catch((e) => {
+          entry.error = e ?? "Unknown error"
+        }),
   };
 
   cache.push(entry);
@@ -57,7 +58,7 @@ function clear<Response, Args extends any[]>(
   cache: PromiseCache<Response, Args>[],
   ...args: Args
 ) {
-  if (args === undefined || args.length === 0) {
+  if (args.length === 0) {
     cache.splice(0, cache.length);
   } else {
     const entry = cache.find((entry) => deepEqual(args, entry.args));

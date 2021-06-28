@@ -5,7 +5,9 @@ const imageAsset = createAsset<string, [string]>(
   (src) =>
     new Promise((resolve) => {
       const img = new Image();
-      img.onload = () => resolve(src);
+      img.onload = () => {
+        resolve(src)
+      };
       img.src = src;
     })
 );
@@ -17,6 +19,8 @@ type Props = DetailedHTMLProps<
   src: string;
 };
 
-export const Img: VFC<Props> = ({ src, alt, ...rest }) => (
-  <img src={imageAsset.read(src)} alt={alt} {...rest} />
-);
+export const Img: VFC<Props> = ({ src, alt, ...rest }) => {
+  return (
+    <img src={imageAsset.read(src)} alt={alt} {...rest} />
+  )
+};
